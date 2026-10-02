@@ -92,3 +92,70 @@ class LateFeePayment implements Payable {
     }
 }
 
+------------------------------------------------------------
+##domain
+
+import java.util.*;
+
+class Solution {
+    public String applyRoomOps(String[] ops) {
+        Map<String, String> studentRoom = new HashMap<>();
+        Map<String, Integer> roomCount = new HashMap<>();
+
+        int applied = 0;
+        int rejected = 0;
+
+        for (String op : ops) {
+
+            if (op.startsWith("ASSIGN:")) {
+                String[] parts = op.split(":");
+                String student = parts[1];
+                String room = parts[2];
+
+                // Rule 1: student already has a room
+                if (studentRoom.containsKey(student)) {
+                    rejected++;
+                    continue;
+                }
+
+                // Rule 2: room already has 2 residents
+                int count = roomCount.getOrDefault(room, 0);
+
+                if (count >= 2) {
+                    rejected++;
+                    continue;
+                }
+
+                // Apply assignment
+                studentRoom.put(student, room);
+                roomCount.put(room, count + 1);
+
+                applied++;
+
+            } else { // VACATE
+                String student = op.substring(7);
+
+                // Student has no room
+                if (!studentRoom.containsKey(student)) {
+                    rejected++;
+                    continue;
+                }
+
+                // Find the room the student occupies
+                String room = studentRoom.get(student);
+
+                // Decrease room count
+                int count = roomCount.get(room);
+                roomCount.put(room, count - 1);
+
+                // Remove student's assignment
+                studentRoom.remove(student);
+
+                applied++;
+            }
+        }
+
+        return applied + "," + rejected;
+    }
+}
+
