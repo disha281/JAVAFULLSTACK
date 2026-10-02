@@ -1,0 +1,94 @@
+class Solution {
+    public String formatIdCard(String name, String usn, int semester) {
+
+        if (semester < 1 || semester > 8) {
+            return "INVALID";
+        }
+
+        name = name.trim();
+        usn = usn.trim().toUpperCase();
+
+        String[] words = name.split("\\s+");
+        StringBuilder formattedName = new StringBuilder();
+
+        for (String word : words) {
+            formattedName.append(
+                word.substring(0, 1).toUpperCase()
+            );
+
+            if (word.length() > 1) {
+                formattedName.append(
+                    word.substring(1).toLowerCase()
+                );
+            }
+
+            formattedName.append(" ");
+        }
+
+        return formattedName.toString().trim()
+                + " | "
+                + usn
+                + " | S"
+                + semester;
+    }
+}
+
+--------------------------------------------------------------
+##OBJECT
+  
+  class Solution {
+    public int countDistinctPayments(String[] receipts) {
+
+        HashSet<String> set = new HashSet<>();
+
+        for (String receipt : receipts) {
+
+            String[] parts = receipt.split("\\|");
+
+            String usn = parts[0].toLowerCase();
+
+            long amount = Long.parseLong(parts[1]);
+
+            String key = usn + "|" + amount;
+
+            set.add(key);
+        }
+
+        return set.size();
+    }
+}
+-----------------------------------------------------------
+
+  ##INHERITANCE
+  
+    public class Main {
+    public static void main(String[] args) {
+        Payable late = new LateFeePayment(new Payment(58000), 500);
+        System.out.println(late.amountPaise());
+    }
+}
+
+interface Payable {
+    long amountPaise();
+}
+
+class Payment implements Payable {
+    private final long paise;
+    Payment(long paise) { this.paise = paise; }
+    public long amountPaise() { return paise; }
+}
+
+class LateFeePayment implements Payable {
+    private final Payment base;
+    private final long finePaise;
+
+    LateFeePayment(Payment base, long finePaise) {
+        this.base = base;
+        this.finePaise = finePaise;
+    }
+
+    public long amountPaise() {
+        return base.amountPaise();   // the fine is missing
+    }
+}
+
